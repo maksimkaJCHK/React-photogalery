@@ -1,0 +1,35 @@
+.photogalery {
+  color: #000;
+  font: 20px/130% Tahoma, "Geneva CY", sans-serif;
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  h1 {
+    color: #19365c;
+    font-size: 30px;
+    font-weight: normal;
+    line-height: 120%;
+    margin: 0 0 30px;
+  }
+  a {
+    color: #19365c;
+    text-decoration: none;
+    &:hover {
+      color: #070535;
+      text-decoration: underline;
+    }
+  }
+  .noItems,
+  .loaded {
+    color: #070535;
+  }
+  .back {
+    margin: 20px 0;
+  }
+  .author-list {
+    li {
+      margin: 10px 0;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+.photo-list {
+  display: flex;
+  flex-wrap: wrap;
+  &-item {
+    width: 20%;
+    cursor: pointer;
+    img {
+      width: 100%;
+      display: block;
+    }
+  }
+}
