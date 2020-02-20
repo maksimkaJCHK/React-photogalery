@@ -15,6 +15,8 @@ export default class AlbumPhoto extends Component {
     photos = photos.filter(el=>el.albumId == albums[0].id);
     this.state = {
       isModal: false,
+      loadImage: false,
+      loadModal: false,
       idModalPhotos: null,
       urlModalPhoto: null,
       titleModalPhoto: null,
@@ -32,36 +34,40 @@ export default class AlbumPhoto extends Component {
   prevModalImg() {
     let {idModalPhotos, photos, allPhotosLength} = this.state;
     let countModalPhoto = photos.findIndex(el=>el.id == idModalPhotos) - 1;
-
+    let self = this;
     if(countModalPhoto<0) {
-      this.setState({
-        countImage: allPhotosLength,
-        idModalPhotos: photos[allPhotosLength].id,
-        urlModalPhoto: photos[allPhotosLength].url,
-        titleModalPhoto: photos[allPhotosLength].title
-      });
-    } else {
-      this.setState({
+      countModalPhoto = allPhotosLength;
+    }
+    this.setState({
+      loadImage: true
+    });
+    let tmp = new Image();
+    tmp.src = photos[countModalPhoto].url;
+    tmp.onload = function() {
+      self.setState({
+        loadImage: false,
         countImage: countModalPhoto,
         idModalPhotos: photos[countModalPhoto].id,
         urlModalPhoto: photos[countModalPhoto].url,
         titleModalPhoto: photos[countModalPhoto].title
       });
-    }
+    }	
   }
   nextModalImg() {
     let {idModalPhotos, photos, allPhotosLength} = this.state;
     let countModalPhoto = photos.findIndex(el=>el.id == idModalPhotos) + 1;
-
+    let self = this;
     if(countModalPhoto>allPhotosLength) {
-      this.setState({
-        countImage: 0,
-        idModalPhotos: photos[0].id,
-        urlModalPhoto: photos[0].url,
-        titleModalPhoto: photos[0].title
-      });
-    } else {
-      this.setState({
+      countModalPhoto = 0;
+    }
+    this.setState({
+      loadImage: true
+    });
+    let tmp = new Image();
+    tmp.src = photos[countModalPhoto].url;
+    tmp.onload = function() {
+      self.setState({
+        loadImage: false,
         countImage: countModalPhoto,
         idModalPhotos: photos[countModalPhoto].id,
         urlModalPhoto: photos[countModalPhoto].url,
@@ -85,21 +91,30 @@ export default class AlbumPhoto extends Component {
     let countModalPhoto = photos.findIndex(el=>el.id == idModalPhotos);
     let urlModalPhoto = modalPhoto[0].url;
     let titleModalPhoto = modalPhoto[0].title;
+    let self = this;
     this.setState({
-      isModal: true,
-      idModalPhotos,
-      urlModalPhoto,
-      titleModalPhoto,
-      countImage: countModalPhoto
+      loadModal: true,
+      isModal: true
     });
+    let tmp = new Image();
+    tmp.src = urlModalPhoto;
+    tmp.onload = function() {
+      self.setState({
+        loadModal: false,
+        idModalPhotos,
+        urlModalPhoto,
+        titleModalPhoto,
+        countImage: countModalPhoto
+      });
+    }
     body[0].style.overflow = 'hidden';
   }
   render() {
-    let {isModal, photos, titleModalPhoto, urlModalPhoto, idModalPhotos, users, albums, countImage, allPhotosLength} = this.state;
+    let {isModal, photos, titleModalPhoto, urlModalPhoto, idModalPhotos, users, albums, countImage, allPhotosLength, loadModal, loadImage} = this.state;
     return (
       <div className="photogalery">
         <ScrollToTopOnMount />
-        {isModal?<Modal src = {urlModalPhoto} key={idModalPhotos} title = {titleModalPhoto} closeModal = {this.closeModal} prevModalImg = {this.prevModalImg} nextModalImg = {this.nextModalImg} countImage ={countImage} allPhotosLength = {allPhotosLength} />:null}
+        {isModal?<Modal src = {urlModalPhoto} key={idModalPhotos} title = {titleModalPhoto} closeModal = {this.closeModal} prevModalImg = {this.prevModalImg} nextModalImg = {this.nextModalImg} countImage ={countImage} allPhotosLength = {allPhotosLength} loadModal = {loadModal} loadImage = {loadImage}  />:null}
         <div className="back">
           <Link to={`/photographer/${users[0].username}`} >Back to {users[0].name} albums</Link>
         </div>

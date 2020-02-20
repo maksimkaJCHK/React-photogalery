@@ -16,6 +16,7 @@ class App extends Component {
     super(props);
     this.state = {
       isResponse: 0,
+      errors: [],
       albums: [],
       photos: [],
       users: []
@@ -39,23 +40,31 @@ class App extends Component {
           isResponse: ++this.state.isResponse,
           [puth]: [...resp]
         });
+      } else {
+        console.log(err);
+        this.setState({
+          errors: [
+            ...this.state.errors,
+            `Server - https://jsonplaceholder.typicode.com/${puth} is not available`
+          ]
+        });
       }
     });
   }
   render() {
-    let {users, photos, albums, isResponse} = this.state;
+    let {users, photos, albums, isResponse, errors} = this.state;
 
     return (
       <Router>
         <Route path="/" exact = {true} render = {() => (
-          (isResponse>2)?<AuthorList users = {users} />:<LoadedBlock title = 'List of photographers...' />
+          (isResponse>2)?<AuthorList users = {users} />:<LoadedBlock errors = {errors} title = 'List of photographers a loaded...' />
         )} />
         <Route path="/photographer/:id" exact = {true} render = {({match})=> (
           // Я думаю, что адрес должен содержать имя пользователя, альбомы с фотографиями сформирую в UserAlbums
-          (isResponse>2)?<UserAlbums photos = {photos} users = {users} albums = {albums} match = {match} />:<LoadedBlock title = 'Photographer albums loaded...' />
+          (isResponse>2)?<UserAlbums photos = {photos} users = {users} albums = {albums} match = {match} />:<LoadedBlock errors = {errors} title = 'Photographer albums loaded...' />
         )} />
         <Route path="/photographer/:id/:subId" exact = {true} render = {({match})=> (
-          (isResponse>2)?<AlbumPhoto photos = {photos} users = {users} albums = {albums} match = {match} />:<LoadedBlock title = 'Album photos loaded...' />
+          (isResponse>2)?<AlbumPhoto photos = {photos} users = {users} albums = {albums} match = {match} />:<LoadedBlock errors = {errors} title = 'Album photos loaded...' />
         )} />
       </Router>
     )
